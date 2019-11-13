@@ -22,6 +22,8 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+include(FeatureSummary)
+
 add_definitions(-std=c++11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -61,10 +63,10 @@ if(WIN32 AND MSVC)
 endif()
 
 if(NOT FORCE_INTERNAL_ANTLR)
-    find_package(Antlr2 QUIET)
+    find_package(Antlr2)
 endif()
 if(NOT FORCE_INTERNAL_QSCINTILLA)
-    find_package(QScintilla QUIET)
+    find_package(QScintilla)
 endif()
 
 set(QHEXEDIT_DIR libs/qhexedit)
@@ -304,7 +306,7 @@ endif(WIN32)
 
 #enable version check for MacOS
 if(APPLE)
-	add_definitions(-DCHECKNEWVERSION)
+	# add_definitions(-DCHECKNEWVERSION)
 endif(APPLE)
 
 # SQLCipher option
@@ -343,12 +345,12 @@ include_directories(
 if(ANTLR2_FOUND)
     include_directories(${ANTLR2_INCLUDE_DIRS})
 else()
-    include_directories(${ANTLR_DIR})
+    # include_directories(${ANTLR_DIR})
 endif()
 if(QSCINTILLA_FOUND)
     include_directories(${QSCINTILLA_INCLUDE_DIR})
 else()
-    include_directories(${QSCINTILLA_DIR})
+    # include_directories(${QSCINTILLA_DIR})
 endif()
 
 add_executable(${PROJECT_NAME}
@@ -424,7 +426,7 @@ if(ENABLE_TESTING)
 	add_subdirectory(src/tests)
 endif()
 
-if(UNIX AND NOT APPLE)
+if(UNIX)
 	install(FILES src/icons/${PROJECT_NAME}.png
 		DESTINATION share/icons/hicolor/256x256/apps/)
 
@@ -433,7 +435,7 @@ if(UNIX AND NOT APPLE)
 
 	install(FILES distri/${PROJECT_NAME}.desktop.appdata.xml
 		DESTINATION share/appdata/)
-endif(UNIX AND NOT APPLE)
+endif(UNIX)
 
 if(WIN32 AND MSVC)
 	install(TARGETS ${PROJECT_NAME}
@@ -501,3 +503,5 @@ if(WIN32 AND MSVC)
 			distri/winlaunch.bat
 		DESTINATION "/")
 endif()
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
